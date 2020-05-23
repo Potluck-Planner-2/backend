@@ -45,6 +45,7 @@ function getGuests(id) {
         .where({'invites.potluck_id': id})
         .join('users', 'users.id', '=', 'invites.user_id')
 }
+
 function insert() {
     return
 }
