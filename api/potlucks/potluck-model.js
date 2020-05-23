@@ -46,8 +46,9 @@ function getGuests(id) {
         .join('users', 'users.id', '=', 'invites.user_id')
 }
 
-function insert() {
-    return
+function insert(data) {
+    return db('potlucks')
+        .insert(data)
 }
 
 function update() {
