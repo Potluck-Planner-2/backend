@@ -5,6 +5,7 @@ const express = require('express');
 const router = express.Router();
 
 const Potlucks = require('./potluck-model.js');
+const Users = require('../users/users-model.js');
 
 
 //GET /potlucks | View all potlucks that have been submitted
@@ -92,9 +93,44 @@ router.post('/', validateData, (req, res) => {
 
 // PUT /potlucks/:id | Edit a potluck IF you are the organizer  (decode token) {name, location, datetime}
 
+router.put('/:id', validateId, (req, res) => {
+    //validate the organizer id, if it's in there
+    if(req.body.organizer_id) {
+        Users.getByid(req.body.organizer_id)
+            .then(([user]) => {
+                if(!user) {
+                    res.status(400).json({message: "Please update using a valid user id as the organizer id"})
+                }
+            })
+    }
+
+    Potlucks.update(req.params.id, req.body)
+        .then(records => {
+            Potlucks.getById(req.params.id)
+                .then(([potluck]) => {
+                    res.status(200).json({message: "Potluck successfully updated", potluck: potluck})
+                })
+                .catch(err => {
+                    res.status(500).json({message: "Potluck updated successfully, but record retrieval failed. Proceed with caution."})
+                })
+        })
+        .catch(err => {
+            res.status(500).json({message: "Error updating potluck", error: err})
+        })
+})
+
 //DELETE | /potlucks/:id | Delete a potluck, IF you're the organizer  (decode token)
 
-
+function validateId(req, res, next) {
+    Potlucks.getById(req.params.id) 
+        .then(([potuck]) => {
+            if(potluck) {
+                next();
+            } else {
+                res.status(404).json({message: "Potluck not found"})
+            }
+        })
+}
 function validateData(req, res, next) {
     if(req.body.name && req.body.location && req.body.datetime) {
         next();

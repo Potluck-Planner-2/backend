@@ -48,11 +48,13 @@ function getGuests(id) {
 
 function insert(data) {
     return db('potlucks')
-        .insert(data)
+        .insert(data);
 }
 
-function update() {
-    return
+function update(id, changes) {
+    return db('potlucks')
+        .where({id})
+        .update(changes);
 }
 
 function remove() {
