@@ -1,9 +1,12 @@
-const db = require("../database/dbConfig");
+const db = require("../database/db-config");
 
 module.exports = {
   add,
   find,
   findBy,
+  findById,
+  update,
+  remove
 };
 
 async function add(user) {
@@ -30,4 +33,21 @@ function findBy(filter) {
   // console.log("filter", filter);
   return db("users")
     .where(filter)
+}
+
+function update(changes, id) {
+  return db("users")
+  .where({ id })
+  .update(changes)
+  .then(() => {
+    return findById(id);
+  )};
+}
+
+async function remove(id) {
+  const user = await findById(id);
+  db("users")
+  .where({ id })
+  .del();
+  return user;
 }

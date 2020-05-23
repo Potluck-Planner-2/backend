@@ -6,8 +6,8 @@ const Users = require("./users-model");
 const Jokes = require("../jokes/jokes-router");
 
 describe("auth", () => {
-  const newUser1 = { username: "LisaPizza", password: "PizzaPassword" };
-  const newUser2 = { username: "BigLisaPizza", password: "BigPizzaPassword" };
+  const newUser1 = { username: "LisaPizza", first_name: "Lisa", last_name: "Masko", password: "PizzaPassword" };
+  const newUser2 = { username: "BigLisaPizza", first_name: "BigLisa", last_name: "BigMasko", password: "BigPizzaPassword" };
 
   beforeEach(async () => {
     await db("users").truncate();

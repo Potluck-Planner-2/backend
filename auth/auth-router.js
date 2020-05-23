@@ -5,7 +5,7 @@ const router = require('express').Router();
 
 const Users = require("../users/users-model.js");
 
-const { isValid } = require("../users/users-service.js");
+const { isValid } = require("../api/users/users-service.js.js");
 
 
 router.post('/register', (req, res) => {
@@ -24,7 +24,7 @@ router.post('/register', (req, res) => {
     });
 } else {
   res.status(400).json({
-    message: "please provide username and password and the password shoud be alphanumeric",
+    message: "please provide username, first & last name, and a password",
   });
 }
 });
@@ -48,7 +48,7 @@ router.post('/login', (req, res) => {
       });
   } else {
     res.status(400).json({
-      message: "please provide username and password and the password shoud be alphanumeric",
+      message: "please provide username and password",
     });
   }
 });
@@ -59,7 +59,7 @@ function createToken(user) {
     username: user.username,
   };
 
-  const secret = process.env.JWT_SECRET || "keepitsecret,keepitsafe!";
+  const secret = process.env.JWT_SECRET || "PotlucksAreGreatIfYouDontGetFoodPoisoning";
 
   const options = {
     expiresIn: "1d",
