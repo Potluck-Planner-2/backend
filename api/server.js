@@ -8,6 +8,7 @@ const UserRouter = require('./users/users-router.js');
 const LoginRouter = require('./login/login-router.js');
 const PotlucksRouter = require('./potlucks/potluck-router.js');
 const ItemsRouter = require('./items/items-router.js');
+const InvitesRouter = require('./invites/invites-router');
 const auth = require('./auth/auth-middleware.js');
 
 const server = express();
@@ -16,13 +17,16 @@ server.use(cors());
 server.use(helmet());
 server.use(express.json());
 
-server.use('/api/users', UserRouter);
+
 server.use('/api/login', LoginRouter);
 
-//RESTRICTED
 
+
+//RESTRICTED
+server.use('/api/users', auth, UserRouter);
 server.use('/api/potlucks', auth, PotlucksRouter);
-server.use('/api/items', auth, ItemsRouter)
+server.use('/api/items', auth, ItemsRouter);
+server.use('/api/invites',auth, InvitesRouter);
 
 server.get('/', (req, res) => {
     res.status(200).json({message: "Server is up and running"});
