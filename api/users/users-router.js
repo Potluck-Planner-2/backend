@@ -1,7 +1,7 @@
 // /api/users
 
 const express = require('express')
-
+const bcrypt = require('bcryptjs')
 const router = express.Router();
 
 const Users = require('./users-model')
@@ -31,14 +31,29 @@ router.get('/:id', (req, res) => {
             }
         })
         .catch(err => {
-            res.status(500).json({message: "Error retrieving users", error: err})
+            res.status(500).json({message: "Error retrieving user", error: err})
         })
 })
 
 // POST /users | Add new user {username, first_name, last_name, password}
 
-router.post('/', validateContent, (req, res) => {
-    res.status(200).json({message: "Ready to add"})
+router.post('/', validateContent, isUsernameTaken,(req, res) => {
+    const hash = bcrypt.hashSync(req.body.password,10);
+    req.body.password = hash;
+
+    Users.insert(req.body)
+        .then(([id]) => {
+            Users.getByid(id)
+                .then(([user]) => {
+                    res.status(201).json({message: "Creation successful", user: {id: user.id, first_name: user.first_name, last_name: user.last_name, username: user.username}})
+                })
+                .catch(err => {
+                    res.status(500).json({message: `Creation successful, but unable to retrieve user ${id} details. Proceed with caution`, error: err})
+                })
+        })
+        .catch(err => {
+            res.status(500).json({message: "Error creating user", error: err})
+        })
 })
 
 
@@ -52,7 +67,14 @@ router.post('/', validateContent, (req, res) => {
 
 function validateContent(req, res, next) {
     if (req.body && req.body.username && req.body.first_name && req.body.last_name && req.body.password) {
-        Users.getByUsername(req.body.username)
+        next();
+    } else {
+        res.status(400).json({message: "Please include a username, first_name, last_name, and password in the body of your request."})
+    }
+}
+
+function isUsernameTaken(req, res, next) {
+    Users.getByUsername(req.body.username)
             .then(([user]) => {
                 if(!user) {
                     next();
@@ -60,8 +82,5 @@ function validateContent(req, res, next) {
                     res.status(400).json({message: "Username already taken."})
                 }
             })
-    } else {
-        res.status(400).json({message: "Please include a username, first_name, last_name, and password in the body of your request."})
-    }
 }
 module.exports = router;
