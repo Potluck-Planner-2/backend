@@ -5,6 +5,7 @@ module.exports = {
     getById,
     getByOrganizer,
     getByGuest,
+    getGuests,
     insert,
     update,
     remove
@@ -38,6 +39,12 @@ function getByGuest(id) {
     .where({'invites.user_id': id})
 }
 
+function getGuests(id) {
+    return db.select(db.ref('invites.id').as('invite_id'), 'invites.user_id', 'invites.potluck_id', 'users.username', 'users.first_name', 'users.last_name')
+        .from('invites')
+        .where({'invites.potluck_id': id})
+        .join('users', 'users.id', '=', 'invites.user_id')
+}
 function insert() {
     return
 }

@@ -63,6 +63,17 @@ router.get('/mine/guest', (req, res) => {
 
 //GET potlucks/:id/guests | Get a list of all invited guests to a potluck
 
+router.get('/:id/guests', (req, res) => {
+    //todo: validate potluck id
+    Potlucks.getGuests(req.params.id)
+        .then(guests => {
+            res.status(200).json({message: guests})
+        })
+        .catch(err => {
+            res.status(500).json({message: "Error retreiving guests", error: err})
+        })
+})
+
 //POST /potlucks | Create a potluck {name, location, datetime}
 
 // PUT /potlucks/:id | Edit a potluck IF you are the organizer  (decode token) {name, location, datetime}
