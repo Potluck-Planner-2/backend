@@ -1,7 +1,7 @@
 // /api/potlucks
 
 const express = require('express');
-const auth = require('../auth/auth-middleware.js');
+// const auth = require('../auth/auth-middleware.js');
 const router = express.Router();
 
 const Potlucks = require('./potluck-model.js');
@@ -9,7 +9,7 @@ const Potlucks = require('./potluck-model.js');
 
 //GET /potlucks | View all potlucks that have been submitted
 
-router.get('/', auth, (req, res) => {
+router.get('/', (req, res) => {
     Potlucks.getAll()
         .then(potlucks => {
             res.status(200).json({potlucks: potlucks})
@@ -20,6 +20,21 @@ router.get('/', auth, (req, res) => {
 })
 
 //GET /potlucks/:id | View individual potluck details
+
+router.get('/:id', (req, res) => {
+    Potlucks.getById(req.params.id)
+        .then(([potluck]) => {
+            if(potluck) {
+                res.status(200).json({potluck: potluck})
+            } else {
+                res.status(404).json({message: "potluck not found"})
+            }
+            
+        })
+        .catch(err => {
+            res.status(500).json({message: "Error retreiving potluck", error: err})
+        })
+})
 
 //GET potlucks/mine/organizer | View potlucks that you've organized 
 
