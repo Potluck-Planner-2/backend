@@ -59,6 +59,36 @@ router.post('/', validateContent, isUsernameTaken,(req, res) => {
 
 // PUT /users/:id | Edit user {username, first_name, last_name, password}
 
+router.put('/:id', validateId, (req, res) => {
+    //if there's a password, hash it baby
+    if (req.body.password){
+        const hash = bcrypt.hashSync(req.body.password,10);
+        req.body.password = hash;
+    } 
+    //TODO, check if username is different, if so, validate before changing
+    
+
+    Users.update(req.params.id, req.body)
+        .then(response => {
+            if(response) {
+                Users.getByid(req.params.id)
+                    .then(([user]) => {
+                        res.status(200).json({message: "Update successful", user: {id: user.id, first_name: user.first_name, last_name: user.last_name, username: user.username}})
+                    })
+                    .catch(err => {
+                        res.status(500).json({message: "Error retrieving user info after update. Proceed with caution.", error: err})
+                    })
+
+            } else {
+                res.status(500).json({message: "Error updating user"})
+
+            }
+        })
+        .catch(err => {
+            res.status(500).json({message: "Error updating user", error: err})
+        })
+})
+
 
 // DELETE /users/:id | Delete user
 
@@ -74,6 +104,7 @@ function validateContent(req, res, next) {
 }
 
 function isUsernameTaken(req, res, next) {
+    
     Users.getByUsername(req.body.username)
             .then(([user]) => {
                 if(!user) {
@@ -82,5 +113,22 @@ function isUsernameTaken(req, res, next) {
                     res.status(400).json({message: "Username already taken."})
                 }
             })
+            .catch(err => {
+                res.status(500).json({message: "Error validating username", error: err})
+            })
+}
+
+function validateId(req, res, next) {
+    Users.getByid(req.params.id)
+        .then(([user]) => {
+            if(user) {
+                next();
+            } else {
+                res.status(404).json({message: "User not found"})
+            }
+        })
+        .catch(err => {
+            res.status(500).json({message: "Error validating userid", error: err})
+        })
 }
 module.exports = router;
