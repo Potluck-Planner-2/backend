@@ -63,7 +63,7 @@ router.get('/mine/guest', (req, res) => {
 
 //GET potlucks/:id/guests | Get a list of all invited guests to a potluck
 
-router.get('/:id/guests', (req, res) => {
+router.get('/:id/guests', validateId, (req, res) => {
     //todo: validate potluck id
     Potlucks.getGuests(req.params.id)
         .then(guests => {
@@ -83,7 +83,16 @@ router.get('/:id/guests', (req, res) => {
 
 
 
-
+function validateId(req, res, next) {
+    return Potlucks.getById(req.params.id)
+        .then(([potluck]) => {
+            if(potluck) {
+                next();
+            } else {
+                res.status(404).json({message: "Potluck not found"})
+            }
+        })
+}
 
 
 module.exports = router;
