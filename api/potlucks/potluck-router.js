@@ -50,6 +50,17 @@ router.get('/mine/organizer', (req, res) => {
 
 //GET potlucks/mine/guest | View potluck if you've been invited as a guest 
 
+router.get('/mine/guest', (req, res) => {
+    //TODO: retrieve ALL records
+    Potlucks.getByGuest(req.jwt.subject)
+        .then(potlucks => {
+                res.status(200).json({potlucks: potlucks})
+        })
+        .catch(err => {
+            res.status(500).json({message: "Error retreiving your potlucks", error: err})
+        })
+})
+
 //GET potlucks/:id/guests | Get a list of all invited guests to a potluck
 
 //POST /potlucks | Create a potluck {name, location, datetime}
