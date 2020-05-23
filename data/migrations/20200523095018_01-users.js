@@ -45,7 +45,8 @@ exports.up = function(knex) {
         tbl.string('name', 100)
             .notNullable();
         tbl.integer('user_id')
-            .notNullable();
+            .notNullable()
+            .defaultTo(1);
         tbl.foreign('user_id')
             .references('users.id');
         tbl.integer('potluck_id')

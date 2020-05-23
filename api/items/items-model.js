@@ -40,12 +40,15 @@ function getByUserId(id) {
         .join('potlucks', 'potlucks.id', '=', 'items.potluck_id')
 }   
 
-function insert() {
-    return 
+function insert(data) {
+    return db('items')
+        .insert(data);
 }
 
-function update() {
-    return 
+function update(id, content) {
+    return db('items')
+        .where({id})
+        .update(content);
 }
 
 function remove() {
