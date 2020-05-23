@@ -155,6 +155,9 @@ function validateId(req, res, next) {
                 res.status(404).json({message: "Potluck not found"})
             }
         })
+        .catch(err => {
+            res.status(500).json({message: "Error validating id", error: err})
+        })
 }
 function validateData(req, res, next) {
     if(req.body.name && req.body.location && req.body.datetime) {

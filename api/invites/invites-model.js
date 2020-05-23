@@ -24,8 +24,10 @@ function insert(data) {
         .insert(data)
 }
 
-function update() {
-    return 
+function update(id, data) {
+    return db('invites')
+        .where({id})
+        .update(data)
 }
 
 function remove() {
