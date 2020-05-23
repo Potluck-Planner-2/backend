@@ -39,13 +39,13 @@ router.get('/:id', (req, res) => {
 
 router.get('/mine/organizer', (req, res) => {
     //TODO: retrieve ALL records
-    // Potlucks.getById(req.jwt.subject)
-    //     .then(potlucks => {
-    //             res.status(200).json({potlucks: potlucks})
-    //     })
-    //     .catch(err => {
-    //         res.status(500).json({message: "Error retreiving your potlucks", error: err})
-    //     })
+    Potlucks.getByOrganizer(req.jwt.subject)
+        .then(potlucks => {
+                res.status(200).json({potlucks: potlucks})
+        })
+        .catch(err => {
+            res.status(500).json({message: "Error retreiving your potlucks", error: err})
+        })
 })
 
 //GET potlucks/mine/guest | View potluck if you've been invited as a guest 
