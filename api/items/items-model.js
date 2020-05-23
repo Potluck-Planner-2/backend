@@ -51,6 +51,8 @@ function update(id, content) {
         .update(content);
 }
 
-function remove() {
-    return 
+function remove(id) {
+    return db('items')
+        .where({id})
+        .delete();
 }

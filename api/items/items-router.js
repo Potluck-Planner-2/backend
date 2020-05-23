@@ -94,6 +94,15 @@ router.put('/:id', validateId, (req, res) => {
 
 //DELETE /items/:itemid | Delete an item IF you're the organizer (decode token)
 
+router.delete('/:id', validateId, (req, res) => {
+    Items.remove(req.params.id)
+        .then(success => {
+            res.status(200).json({message: "Item successfully deleted", num_of_records: success})
+        })
+        .catch(err => {
+            res.status(500).json({message: "Error deleting item", error: err})
+        })
+})
 
 //middleware
 
