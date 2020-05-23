@@ -30,8 +30,16 @@ router.get('/:id', (req, res) => {
         })
 });
 
-//GET /items/user/:id | Get list of items by user id
-
+//GET /items/users/:id | Get list of items by user id
+router.get('/users/:id', (req, res) => {
+    Items.getByUserId(req.params.id)
+        .then((items )=> {
+            res.status(200).json({items: items})
+        })
+        .catch(err => {
+            res.status(500).json({message: "Error retrieving items", error: err})
+        })
+});
 
 //POST /items | add an item
 
