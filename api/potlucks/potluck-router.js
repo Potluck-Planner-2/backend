@@ -121,6 +121,16 @@ router.put('/:id', validateId, (req, res) => {
 
 //DELETE | /potlucks/:id | Delete a potluck, IF you're the organizer  (decode token)
 
+router.delete('/:id', validateId, (req, res) => {
+    Potlucks.remove(req.params.id)
+        .then(success => {
+            res.status(200).json({message: "Potluck successfully deleted", num_of_records: success})
+        })
+        .catch(err => {
+            res.status(500).json({message: "Error deleting potluck", error: err})
+        })
+})
+
 function validateId(req, res, next) {
     Potlucks.getById(req.params.id) 
         .then(([potuck]) => {

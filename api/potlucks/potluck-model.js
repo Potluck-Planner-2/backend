@@ -57,6 +57,8 @@ function update(id, changes) {
         .update(changes);
 }
 
-function remove() {
-    return
+function remove(id) {
+    return db('potlucks')
+        .where({id})
+        .del()
 }
