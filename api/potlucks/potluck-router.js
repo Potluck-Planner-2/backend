@@ -6,7 +6,7 @@ const router = express.Router();
 
 const Potlucks = require('./potluck-model.js');
 const Users = require('../users/users-model.js');
-
+const Items = require('../items/items-model.js');
 
 //GET /potlucks | View all potlucks that have been submitted
 
@@ -131,6 +131,21 @@ router.delete('/:id', validateId, (req, res) => {
         })
 })
 
+//ITEMS
+
+//GET /potlucks/:id/items | View potluck items by individual potluck
+
+router.get('/:id/items', validateId, (req, res) => {
+    Items.getByPotluckId(req.params.id)
+        .then(items => {
+            res.status(200).json({items: items})
+        })
+        .catch(err => {
+            res.status(500).json({message: "Error retrieving items", error: err})
+        })
+})
+
+//middleware
 function validateId(req, res, next) {
     Potlucks.getById(req.params.id) 
         .then(([potuck]) => {
