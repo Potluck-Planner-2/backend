@@ -23,8 +23,11 @@ function getById(id) {
     .join('users', 'users.id', '=', 'potlucks.organizer_id')
 }
 
-function getByOrganizer() {
-    return
+function getByOrganizer(id) {
+    return db.select('potlucks.id', db.ref('potlucks.name').as('potluck_name'), 'potlucks.location', 'potlucks.organizer_id', 'potlucks.datetime', db.ref('users.id').as('organizer_id'), db.ref('users.first_name').as('organizer_first_name'), db.ref('users.last_name').as('organizer_last_name'), db.ref('users.id').as('organizer_id'), db.ref('users.username').as('organizer_username'))
+    .from('potlucks')
+    .where({'potlucks.organizer_id': id})
+    .join('users', 'users.id', '=', 'potlucks.organizer_id')
 }
 
 function getByGuest() {

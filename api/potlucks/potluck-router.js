@@ -29,7 +29,6 @@ router.get('/:id', (req, res) => {
             } else {
                 res.status(404).json({message: "potluck not found"})
             }
-            
         })
         .catch(err => {
             res.status(500).json({message: "Error retreiving potluck", error: err})
@@ -37,6 +36,17 @@ router.get('/:id', (req, res) => {
 })
 
 //GET potlucks/mine/organizer | View potlucks that you've organized 
+
+router.get('/mine/organizer', (req, res) => {
+    //TODO: retrieve ALL records
+    // Potlucks.getById(req.jwt.subject)
+    //     .then(potlucks => {
+    //             res.status(200).json({potlucks: potlucks})
+    //     })
+    //     .catch(err => {
+    //         res.status(500).json({message: "Error retreiving your potlucks", error: err})
+    //     })
+})
 
 //GET potlucks/mine/guest | View potluck if you've been invited as a guest 
 
