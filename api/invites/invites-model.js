@@ -19,8 +19,9 @@ function getById(id) {
         .where({id})
 }
 
-function insert() {
-    return 
+function insert(data) {
+    return db('invites')
+        .insert(data)
 }
 
 function update() {
