@@ -15,7 +15,6 @@ exports.seed = function(knex) {
         {id: 8, location: 'Where Jacob least expects it', name: "Jacob's Surprise Party", organizer_id: 3, datetime: new Date()},
         {id: 9, location: 'Your childhood home', name: "Meet Relatives You Don't Remember", organizer_id: 4, datetime: new Date()},
         {id: 10, location: 'In the city in the clouds', name: 'Come Be Betrayed By A Friend... Also, Ambrosia Salad!', organizer_id: 5, datetime: new Date()},
-       
       ]);
     });
 };
