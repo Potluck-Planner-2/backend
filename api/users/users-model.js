@@ -2,7 +2,7 @@ const db = require('../../dbConfig.js');
 
 module.exports = {
     getAll,
-    betByid,
+    getByid,
     insert,
     update,
     remove
@@ -10,28 +10,28 @@ module.exports = {
 
 function getAll() {
     return db.select('*')
-        .from('users')
+        .from('users');
 }
 
-function betByid() {
+function getByid(id) {
     return db.select('*')
         .from('users')
-        .where({id})
+        .where({id});
 }
 
 function insert(userInfo) {
     return db('users')
-        .insert(userInfo)
+        .insert(userInfo);
 }
 
 function update(id, changes) {
     return db('users')
         .where({id})
-        .update(changes)
+        .update(changes);
 }
 
 function remove() {
     return db('users')
         .where({id})
-        .del()
+        .del();
 }
