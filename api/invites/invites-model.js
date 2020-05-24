@@ -30,6 +30,8 @@ function update(id, data) {
         .update(data)
 }
 
-function remove() {
-    return 
+function remove(id) {
+    return db('invites')
+        .where({id})
+        .delete()
 }

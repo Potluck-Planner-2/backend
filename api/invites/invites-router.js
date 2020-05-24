@@ -33,6 +33,33 @@ router.get('/:id', (req, res) => {
 // POST /invites | Create a new invite {user_id, potluck_id}
 
 router.post('/', validateBody, (req, res) => {
+
+    //if there's a userid, validate it
+    if(req.body.user_id) {
+        Users.getByid(req.body.user_id)
+            .then(([user]) => {
+                if(!user){
+                    res.status(404).json({message: "Please use a valid user id when creating this invite"})
+                }
+            })
+            .catch(err => {
+                res.status(500).json({message: "Error validating user id of invite", error: err})
+            })
+    }
+
+    //if there's a potluck id, validate it
+
+    if(req.body.potluck_id) {
+        Potlucks.getById(req.body.potluck_id)
+            .then(([potluck]) => {
+                if(!potluck){
+                    res.status(404).json({message: "Please use a valid potluck id when creating this invite"})
+                }
+            })
+            .catch(err => {
+                res.status(500).json({message: "Error validating potluck id of invite", error: err})
+            })
+    }
     Invites.insert(req.body)
         .then(([id]) => {
             Invites.getById(id)
@@ -89,7 +116,15 @@ router.put('/:id', validateId, (req, res) => {
         })
 })
 // DELETE /invites/:id | Delete an existing invite
-
+router.delete('/:id', validateId, (req, res) => {
+    Invites.remove(req.params.id)
+        .then(success => {
+            res.status(200).json({message: "Invite successfully deleted", num_of_records: success})
+        })
+        .catch(err => {
+            res.status(500).json({message: "Error deleting invite", error: err})
+        })
+})
 //middleware
 
 

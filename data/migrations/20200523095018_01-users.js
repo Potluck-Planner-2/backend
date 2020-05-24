@@ -23,7 +23,9 @@ exports.up = function(knex) {
         tbl.integer('organizer_id')
             .notNullable();
         tbl.foreign('organizer_id')
-            .references('users.id');
+            .references('users.id')
+            .onDelete('RESTRICT')
+            .onUpdate('CASCADE');
         tbl.string('datetime', 100)
             .notNullable();
     })
@@ -33,11 +35,15 @@ exports.up = function(knex) {
         tbl.integer('user_id')
             .notNullable();
         tbl.foreign('user_id')
-            .references('users.id');
+            .references('users.id')
+            .onDelete('RESTRICT')
+            .onUpdate('CASCADE');
         tbl.integer('potluck_id')
             .notNullable();
         tbl.foreign('potluck_id')
-            .references('potlucks.id');
+            .references('potlucks.id')
+            .onDelete('RESTRICT')
+            .onUpdate('CASCADE');
     })
   //create the items table
     .createTable('items', tbl => {
@@ -47,12 +53,20 @@ exports.up = function(knex) {
         tbl.integer('user_id')
             .notNullable()
             .defaultTo(1);
+            
         tbl.foreign('user_id')
-            .references('users.id');
+            .references('users.id')
+            .onDelete('RESTRICT')
+            .onUpdate('CASCADE');
+            
         tbl.integer('potluck_id')
             .notNullable();
+            
         tbl.foreign('potluck_id')
-            .references('potlucks.id');
+            .references('potlucks.id')
+            .onDelete('RESTRICT')
+            .onUpdate('CASCADE');
+            
     })
   
 };
