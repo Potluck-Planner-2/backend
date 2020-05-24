@@ -32,39 +32,13 @@ router.get('/:id', (req, res) => {
 
 // POST /invites | Create a new invite {user_id, potluck_id}
 
-router.post('/', validateBody, (req, res) => {
+router.post('/', validateBody, validateUserId, validatePotluckId, (req, res) => {
 
-    //if there's a userid, validate it
-    if(req.body.user_id) {
-        Users.getByid(req.body.user_id)
-            .then(([user]) => {
-                if(!user){
-                    res.status(404).json({message: "Please use a valid user id when creating this invite"})
-                }
-            })
-            .catch(err => {
-                res.status(500).json({message: "Error validating user id of invite", error: err})
-            })
-    }
-
-    //if there's a potluck id, validate it
-
-    if(req.body.potluck_id) {
-        Potlucks.getById(req.body.potluck_id)
-            .then(([potluck]) => {
-                if(!potluck){
-                    res.status(404).json({message: "Please use a valid potluck id when creating this invite"})
-                }
-            })
-            .catch(err => {
-                res.status(500).json({message: "Error validating potluck id of invite", error: err})
-            })
-    }
     Invites.insert(req.body)
         .then(([id]) => {
             Invites.getById(id)
-                .then(invite => {
-                    res.status(200).json({message: "Invite successfully created", potluck: invite})
+                .then(([invite]) => {
+                    res.status(200).json({message: "Invite successfully created", invite: invite})
             })
         })
         .catch(err => {
@@ -73,33 +47,35 @@ router.post('/', validateBody, (req, res) => {
 })
 // PUT /invites/:id | Edit an existing invite
 
-router.put('/:id', validateId, (req, res) => {
-    //if there's a userid, validate it
-    if(req.body.user_id) {
-        Users.getByid(req.body.user_id)
-            .then(([user]) => {
-                if(!user){
-                    res.status(404).json({message: "Please use a valid user id when updating this record"})
-                }
-            })
-            .catch(err => {
-                res.status(500).json({message: "Error validating user id of invite", error: err})
-            })
-    }
+router.put('/:id', validateId, validateUserId, validatePotluckId,(req, res) => {
+    // //if there's a userid, validate it
+    // if(req.body.user_id) {
+    //     Users.getByid(req.body.user_id)
+    //         .then(([user]) => {
+    //             if(!user){
+    //                 res.status(404).json({message: "Please use a valid user id when updating this record"})
+    //             } else {
+    //                 res.st
+    //             }
+    //         })
+    //         .catch(err => {
+    //             res.status(500).json({message: "Error validating user id of invite", error: err})
+    //         })
+    // }
 
     //if there's a potluck id, validate it
 
-    if(req.body.potluck_id) {
-        Potlucks.getById(req.body.potluck_id)
-            .then(([potluck]) => {
-                if(!potluck){
-                    res.status(404).json({message: "Please use a valid potluck id when updating this record"})
-                }
-            })
-            .catch(err => {
-                res.status(500).json({message: "Error validating potluck id of invite", error: err})
-            })
-    }
+    // if(req.body.potluck_id) {
+    //     Potlucks.getById(req.body.potluck_id)
+    //         .then(([potluck]) => {
+    //             if(!potluck){
+    //                 res.status(404).json({message: "Please use a valid potluck id when updating this record"})
+    //             }
+    //         })
+    //         .catch(err => {
+    //             res.status(500).json({message: "Error validating potluck id of invite", error: err})
+    //         })
+    // }
 
     Invites.update(req.params.id, req.body)
         .then(records => {
@@ -126,6 +102,42 @@ router.delete('/:id', validateId, (req, res) => {
         })
 })
 //middleware
+function validatePotluckId(req, res, next) {
+    if(req.body.potluck_id) {
+        Potlucks.getById(req.body.potluck_id)
+            .then(([potluck]) => {
+                if(!potluck){
+                    res.status(400).json({message: "Please use a valid potluck_id"})
+                } else {
+                    next();
+                }
+            })
+            .catch(err => {
+                res.status(500).json({message: "Error validating potluck id of invite", error: err})
+            })
+    } else {
+        next();
+    }
+}
+function validateUserId(req, res, next) {
+
+    //if there's a userid, validate it
+    if(req.body.user_id || req.body.user_id === 0) {
+        Users.getByid(req.body.user_id)
+            .then(([user]) => {
+                if(!user){
+                    res.status(400).json({message: "Please use a valid user_id"})
+                } else {
+                    next();
+                }
+            })
+            .catch(err => {
+                res.status(500).json({message: "Error validating user id of invite", error: err})
+            })
+    } else {
+        next();
+    }
+}
 function validateId(req, res, next) {
     Invites.getById(req.params.id)
         .then(([invite]) => {
