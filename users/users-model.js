@@ -5,6 +5,7 @@ module.exports = {
   find,
   findBy,
   findById,
+  findUserByPotlucks,
   update,
   remove
 };
@@ -35,13 +36,18 @@ function findBy(filter) {
     .where(filter)
 }
 
+function findUserByPotlucks(user_id) {
+  return db("potlucks")
+  .where({ user_id })
+}
+
 function update(changes, id) {
   return db("users")
-  .where({ id })
-  .update(changes)
-  .then(() => {
-    return findById(id);
-  )};
+    .where({ id })
+    .update(changes)
+    .then(() => {
+      return findUserById(id);
+    });
 }
 
 async function remove(id) {
