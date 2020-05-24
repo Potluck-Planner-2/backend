@@ -18,7 +18,7 @@ describe('Test all functions of the User router', () => {
     beforeEach( async() => {
         await db.seed.run();
     });
-
+//GET
     describe('test GET /api/users', () => {
         it ('returns a list of users', () => {
             return request(server).get('/api/users/')
@@ -49,6 +49,7 @@ describe('Test all functions of the User router', () => {
         })
     })
 
+//POST
     describe('test POST /api/users', () => {
         it('will not post if information is missing', () => {
             return request(server).post('/api/users')
@@ -81,6 +82,7 @@ describe('Test all functions of the User router', () => {
         })
         
     })
+//PUT
     describe('test PUT /api/users', () => {
         it('will not let you edit a user with an invalid id', () => {
             return request(server).put('/api/users/500')
@@ -99,6 +101,7 @@ describe('Test all functions of the User router', () => {
                 })
         })
     })
+//DELETE
     describe('test DELETE /api/users/:id', () => {
         it('wont let you delete a non existent user', () => {
             return request(server).delete('/api/users/500')

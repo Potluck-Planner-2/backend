@@ -64,11 +64,11 @@ router.get('/mine/guest', (req, res) => {
 
 //GET potlucks/:id/guests | Get a list of all invited guests to a potluck
 
-router.get('/:id/guests', validateId, (req, res) => {
+router.get('/:id/guests', validatePotluckId, (req, res) => {
     //todo: validate potluck id
     Potlucks.getGuests(req.params.id)
         .then(guests => {
-            res.status(200).json({message: guests})
+            res.status(200).json({guests: guests})
         })
         .catch(err => {
             res.status(500).json({message: "Error retreiving guests", error: err})
@@ -81,8 +81,8 @@ router.post('/', validateData, (req, res) => {
     Potlucks.insert({...req.body, organizer_id: req.jwt.subject})
         .then(([id]) => {
             Potlucks.getById(id)
-                .then(potluck => {
-                    res.status(200).json({message: "Potluck successfully created", potluck: potluck})
+                .then(([potluck]) => {
+                    res.status(201).json({message: "Potluck successfully created", potluck: potluck})
                 })
             
         })
@@ -93,7 +93,7 @@ router.post('/', validateData, (req, res) => {
 
 // PUT /potlucks/:id | Edit a potluck IF you are the organizer  (decode token) {name, location, datetime}
 
-router.put('/:id', validateId, (req, res) => {
+router.put('/:id', validatePotluckId, (req, res) => {
     //validate the organizer id, if it's in there
     if(req.body.organizer_id) {
         Users.getByid(req.body.organizer_id)
@@ -146,7 +146,7 @@ router.get('/:id/items', validateId, (req, res) => {
 })
 
 //middleware
-function validateId(req, res, next) {
+function validateId(req, res, next) { //this might need to go?
     Potlucks.getById(req.params.id) 
         .then(([potuck]) => {
             if(potluck) {
@@ -167,15 +167,18 @@ function validateData(req, res, next) {
     }
 }
 
-// function validateId(req, res, next) {
-//     return Potlucks.getById(req.params.id)
-//         .then(([potluck]) => {
-//             if(potluck) {
-//                 next();
-//             } else {
-//                 res.status(404).json({message: "Potluck not found"})
-//             }
-//         })
-// }
+function validatePotluckId(req, res, next) {
+    return Potlucks.getById(req.params.id)
+        .then(([potluck]) => {
+            if(potluck) {
+                next();
+            } else {
+                res.status(404).json({message: "Potluck not found"})
+            }
+        })
+        .catch(err => {
+            res.status(500).json({message: "Error validating id", error: err})
+        })
+}
 
 module.exports = router;
