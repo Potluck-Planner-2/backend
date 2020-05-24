@@ -2,6 +2,7 @@
 const express = require('express')
 const Items = require('./items-model.js');
 const Users = require('../users/users-model.js');
+const Potlucks = require('../potlucks/potluck-model.js');
 const router = express.Router();
 
 //GET /items | get list of all items
@@ -56,12 +57,13 @@ router.get('/users/:id', validateUserId, (req, res) => {
 
 
 //POST /items | add an item
-router.post('/', validateBody, (req, res) => {
+//TODO: validate potluck id?
+router.post('/', validateBody, validatePotluckId, (req, res) => {
     Items.insert(req.body) 
         .then(([id]) => {
             Items.getById(id)
                 .then(([item]) => {
-                    res.status(201).json({message: "Record successfully created", item: item})
+                    res.status(201).json({message: "Item successfully created", item: item})
                 })
                 .catch(err => {
                     res.status(500).json({message: "Item successfully created but we had an error retreiving the record. Proceed carefully.", error: err})
@@ -75,7 +77,7 @@ router.post('/', validateBody, (req, res) => {
 
 //PUT /items/:id | edit an item - this can be used for a guest to select that they would like to bring the item by changing the user_id
 
-router.put('/:id', validateId, (req, res) => {
+router.put('/:id', validateId, validatePotluckId, (req, res) => {
     Items.update(req.params.id, req.body) 
         .then(num => {
             Items.getById(req.params.id)
@@ -105,7 +107,20 @@ router.delete('/:id', validateId, (req, res) => {
 })
 
 //middleware
-
+function validatePotluckId(req, res, next) {
+    if(req.body.potluck_id || req.body.potluck_id === 0) {
+        Potlucks.getById(req.body.potluck_id)
+            .then(([potluck]) => {
+                if(potluck) {
+                    next();
+                } else {
+                    res.status(404).json({message: "Please include a valid potluck_id"})
+                }
+            })
+    } else {
+        next();
+    }
+}
 function validateId(req, res, next) {
     Items.getById(req.params.id)
         .then(([items]) => {
