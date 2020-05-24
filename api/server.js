@@ -17,10 +17,7 @@ server.use(cors());
 server.use(helmet());
 server.use(express.json());
 
-
 server.use('/api/login', LoginRouter);
-
-
 
 //RESTRICTED
 server.use('/api/users', auth, UserRouter);

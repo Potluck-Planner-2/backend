@@ -126,9 +126,6 @@ router.delete('/:id', validateId, (req, res) => {
         })
 })
 //middleware
-
-
-
 function validateId(req, res, next) {
     Invites.getById(req.params.id)
         .then(([invite]) => {

@@ -167,16 +167,15 @@ function validateData(req, res, next) {
     }
 }
 
-function validateId(req, res, next) {
-    return Potlucks.getById(req.params.id)
-        .then(([potluck]) => {
-            if(potluck) {
-                next();
-            } else {
-                res.status(404).json({message: "Potluck not found"})
-            }
-        })
-}
-
+// function validateId(req, res, next) {
+//     return Potlucks.getById(req.params.id)
+//         .then(([potluck]) => {
+//             if(potluck) {
+//                 next();
+//             } else {
+//                 res.status(404).json({message: "Potluck not found"})
+//             }
+//         })
+// }
 
 module.exports = router;

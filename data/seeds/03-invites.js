@@ -39,8 +39,6 @@ exports.seed = function(knex) {
         {id: 28, user_id: 5, potluck_id: 8},
         {id: 29, user_id: 5, potluck_id: 9},
         {id: 30, user_id: 5, potluck_id: 10},
-        
-        
       ]);
     });
 };
