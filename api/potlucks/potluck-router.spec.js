@@ -133,5 +133,51 @@ describe('Test all functions of the Potluck router', () => {
                     expect(res.body.potluck.potluck_name).toBeDefined;
                 })
         })
+        it('doesnt work with an invalid organizer id', () => {
+            return request(server).put('/api/potlucks/1')
+                .set({authorization: token})
+                .send({name: "potluck", location: "somewhere", datetime: "tomorrow", organizer_id: 0})
+                .expect(400)
+                .then(res => {
+                    expect(res.body.message).toBe("Please update using a valid user id as the organizer id")
+                })
+        })
+        
+
+    })
+
+    describe('tests DELETE /potlucks/:id', () => {
+        it('doesnt work with an invalid id', () => {
+            return request(server).delete('/api/potlucks/500')
+                .set({authorization: token})
+                .expect(404)
+        })
+
+        it('works with a valid id', () => {
+            return request(server).delete('/api/potlucks/1')
+                .set({authorization: token})
+                .expect(200)
+                .then(res => {
+                    expect(res.body.message).toBe("Potluck successfully deleted")
+                })
+        })
+    })
+
+    describe('GET /api/potlucks/:id/items works', () => {
+        it('doesnt work with an invalid id', () => {
+            return request(server).get('/api/potlucks/500/items')
+                .set({authorization: token})
+                .expect(404)
+        })
+        it('works with a valid id', () => {
+            return request(server).get('/api/potlucks/5/items')
+                .set({authorization: token})
+                .expect(200)
+                .then(res => {
+                    expect(res.body.items).toBeDefined();
+                    expect(res.body.items[0].item_id).toBe(5)
+                    
+                })
+        })
     })
 })

@@ -93,16 +93,8 @@ router.post('/', validateData, (req, res) => {
 
 // PUT /potlucks/:id | Edit a potluck IF you are the organizer  (decode token) {name, location, datetime}
 
-router.put('/:id', validatePotluckId, (req, res) => {
-    //validate the organizer id, if it's in there
-    if(req.body.organizer_id) {
-        Users.getByid(req.body.organizer_id)
-            .then(([user]) => {
-                if(!user) {
-                    res.status(400).json({message: "Please update using a valid user id as the organizer id"})
-                }
-            })
-    }
+router.put('/:id', validatePotluckId, validateOrganizerId, (req, res) => {
+    
 
     Potlucks.update(req.params.id, req.body)
         .then(records => {
@@ -121,7 +113,7 @@ router.put('/:id', validatePotluckId, (req, res) => {
 
 //DELETE | /potlucks/:id | Delete a potluck, IF you're the organizer  (decode token)
 
-router.delete('/:id', validateId, (req, res) => {
+router.delete('/:id', validatePotluckId, (req, res) => {
     Potlucks.remove(req.params.id)
         .then(success => {
             res.status(200).json({message: "Potluck successfully deleted", num_of_records: success})
@@ -135,7 +127,7 @@ router.delete('/:id', validateId, (req, res) => {
 
 //GET /potlucks/:id/items | View potluck items by individual potluck
 
-router.get('/:id/items', validateId, (req, res) => {
+router.get('/:id/items', validatePotluckId, (req, res) => {
     Items.getByPotluckId(req.params.id)
         .then(items => {
             res.status(200).json({items: items})
@@ -146,19 +138,34 @@ router.get('/:id/items', validateId, (req, res) => {
 })
 
 //middleware
-function validateId(req, res, next) { //this might need to go?
-    Potlucks.getById(req.params.id) 
-        .then(([potuck]) => {
-            if(potluck) {
-                next();
-            } else {
-                res.status(404).json({message: "Potluck not found"})
-            }
-        })
-        .catch(err => {
-            res.status(500).json({message: "Error validating id", error: err})
-        })
+
+function validateOrganizerId(req, res, next) {
+    if(req.body.organizer_id || req.body.organizer_id === 0) {
+        Users.getByid(req.body.organizer_id)
+            .then(([user]) => {
+                if(!user) {
+                    res.status(400).json({message: "Please update using a valid user id as the organizer id"})
+                } else {
+                    next();
+                }
+            })
+    } else {
+        next();
+    }
 }
+// function validateId(req, res, next) { //this might need to go?
+//     Potlucks.getById(req.params.id) 
+//         .then(([potuck]) => {
+//             if(potluck) {
+//                 next();
+//             } else {
+//                 res.status(404).json({message: "Potluck not found"})
+//             }
+//         })
+//         .catch(err => {
+//             res.status(500).json({message: "Error validating id", error: err})
+//         })
+// }
 function validateData(req, res, next) {
     if(req.body.name && req.body.location && req.body.datetime) {
         next();
