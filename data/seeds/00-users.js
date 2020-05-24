@@ -22,7 +22,7 @@ exports.seed = function(knex) {
         {id: 4, username: 'cristina', first_name: 'Cristina', last_name: 'Altreche', password: cristinaPass},
         {id: 5, username: 'victoria', first_name: 'Victoria', last_name: 'Topham', password: victoriaPass},
         {id: 6, username: 'lisa', first_name: 'Lisa', last_name: 'Maskovich', password: lisaPass},
-        {id: 7, username: 'patrick', first_name: 'Patrick', last_name: 'Harl', password: patrickPass}
+        {id: 7, username: 'vic2', first_name: 'vic2', last_name: 'vic2', password: vic2}
       ]);
     });
 };
