@@ -3,7 +3,7 @@
 exports.up = function (knex) {
   return knex.schema.createTable("food-items", tbl => {
     tbl.increments();
-    tbl.boolean('user_id', 250)  //ask Victoria aboeu how this will be implemented
+    tbl.boolean('user_id', 250)  //ask Victoria about how the boolean will be implemented
       .notNullable()
       .references("id")
       .inTable("users");
