@@ -15,8 +15,8 @@ server.use(express.json());
 
 server.use('/api/users', usersRouter);
 server.use('/api/auth', authRouter);
-server.use('/api/potlucks', potlucksRouter);
-server.use('/api/foodItems', foodItemsRouter);
+// server.use('/api/potlucks', potlucksRouter);
+// server.use('/api/foodItems', foodItemsRouter);
 
 server.get("/", (req, res) => {
   res.status(200).json({ message: "API is running" })
