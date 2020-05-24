@@ -21,6 +21,24 @@ describe('Test restrictions on login', () => {
             })
             
     })
+    it("can't attempt login with bad username", () => {
+        return request(server).post('/api/login')
+            .send({username: "tictoria", password: "vopham"})
+            .expect(404)
+            .then(res => {
+                expect(res.body.token).toBeUndefined();
+            })
+            
+    })
+    it("can't attempt login with bad password", () => {
+        return request(server).post('/api/login')
+            .send({username: "victoria", password: "vopham"})
+            .expect(401)
+            .then(res => {
+                expect(res.body.token).toBeUndefined();
+            })
+            
+    })
 })
 
 
