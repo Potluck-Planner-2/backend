@@ -1,6 +1,7 @@
 # Vic
 .DS_Store
 .vscode
+.env 
 
 # Logs
 logs
