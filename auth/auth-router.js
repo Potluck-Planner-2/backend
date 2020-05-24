@@ -5,7 +5,7 @@ const router = require('express').Router();
 
 const Users = require("../users/users-model.js");
 
-const { isValid } = require("../api/users/users-service.js.js");
+const { isValid } = require("../users/users-service");
 
 
 router.post('/register', (req, res) => {
