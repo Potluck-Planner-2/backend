@@ -51,7 +51,18 @@ router.get('/users/:id', validateUserId, (req, res) => {
             res.status(200).json({items: items})
         })
         .catch(err => {
-            res.status(500).json({message: "Error retrieving items", error: err})
+            res.status(500).json({message: "Error retrieving items by user", error: err})
+        })
+});
+
+//GET /items/potlucks/:id | Get list of items by user id
+router.get('/potlucks/:id', validatePotluckId, (req, res) => {
+    Items.getByPotluckId(req.params.id)
+        .then((items )=> {
+            res.status(200).json({items: items})
+        })
+        .catch(err => {
+            res.status(500).json({message: "Error retrieving items by potluck", error: err})
         })
 });
 
