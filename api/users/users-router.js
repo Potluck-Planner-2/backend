@@ -105,10 +105,10 @@ router.delete('/:id', validateId, (req, res) => {
 //MIDDLEWARE
 
 function validateContent(req, res, next) {
-    if (req.body && req.body.username && req.body.first_name && req.body.last_name && req.body.password) {
+    if (req.body && req.body.email && req.body.username && req.body.first_name && req.body.last_name && req.body.password) {
         next();
     } else {
-        res.status(400).json({message: "Please include a username, first_name, last_name, and password in the body of your request."})
+        res.status(400).json({message: "Please include a username, email, first_name, last_name, and password in the body of your request."})
     }
 }
 
