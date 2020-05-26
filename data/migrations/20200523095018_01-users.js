@@ -12,6 +12,8 @@ exports.up = function(knex) {
         .notNullable();
       tbl.string('password')
         .notNullable();
+      tbl.string('email')
+        .notNullable();
     })
   //create the potlucks table
     .createTable('potlucks', tbl => {
