@@ -44,6 +44,9 @@ exports.up = function(knex) {
             .references('potlucks.id')
             .onDelete('RESTRICT')
             .onUpdate('CASCADE');
+        tbl.boolean('attending')
+          .notNullable()
+          .defaultTo(false);
     })
   //create the items table
     .createTable('items', tbl => {
