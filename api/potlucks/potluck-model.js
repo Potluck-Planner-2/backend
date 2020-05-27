@@ -33,7 +33,7 @@ function getByOrganizer(id) {
 
 
 function getByGuest(id) {
-    return db.select(db.ref('potlucks.id').as('potluck_id'), 'invites.attending', db.ref('potlucks.name').as('potluck_name'), 'potlucks.location', 'potlucks.organizer_id', 'potlucks.datetime', db.ref('users.id').as('organizer_id'), db.ref('users.first_name').as('organizer_first_name'), db.ref('users.last_name').as('organizer_last_name'), db.ref('users.id').as('organizer_id'), db.ref('users.username').as('organizer_username'))
+    return db.select(db.ref('potlucks.id').as('potluck_id'), db.ref('invites.id').as('invite_id'), 'invites.attending', db.ref('potlucks.name').as('potluck_name'), 'potlucks.location', 'potlucks.organizer_id', 'potlucks.datetime', db.ref('users.id').as('organizer_id'), db.ref('users.first_name').as('organizer_first_name'), db.ref('users.last_name').as('organizer_last_name'), db.ref('users.id').as('organizer_id'), db.ref('users.username').as('organizer_username'))
     .from('potlucks')
     .join('users', 'users.id', '=', 'potlucks.organizer_id')
     .join('invites', 'potlucks.id', '=', 'invites.potluck_id')
