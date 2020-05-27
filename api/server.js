@@ -20,7 +20,7 @@ server.use(express.json());
 server.use('/api/login', LoginRouter);
 
 //RESTRICTED
-server.use('/api/users', auth, UserRouter);
+server.use('/api/users', UserRouter);
 server.use('/api/potlucks', auth, PotlucksRouter);
 server.use('/api/items', auth, ItemsRouter);
 server.use('/api/invites',auth, InvitesRouter);
