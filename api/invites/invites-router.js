@@ -32,7 +32,7 @@ router.get('/:id', (req, res) => {
 
 //get invites by potluck id
 
-router.get('/potlucks/:id', (req, res) => {
+router.get('/potlucks/:id', validatePotluckParam, (req, res) => {
     Invites.getByPotluck(req.params.id)
     .then(invites => {
         res.status(200).json({invites: invites})
@@ -44,7 +44,7 @@ router.get('/potlucks/:id', (req, res) => {
 
 //get invites by user id
 
-router.get('/users/:id', (req, res) => {
+router.get('/users/:id', validateUserParam, (req, res) => {
     Invites.getByUser(req.params.id)
     .then(invites => {
         res.status(200).json({invites: invites})
@@ -154,6 +154,34 @@ function validateBody(req, res, next) {
     } else {
         res.status(400).json({message: "Please include a user_id and a potluck_id in the body of your request."})
     }
+}
+
+function validatePotluckParam(req, res, next) {
+    Potlucks.getById(req.params.id)
+        .then(([potluck]) => {
+            if(potluck) {
+                next();
+            } else {
+                res.status(404).json({message: "Potluck not found"})
+            }
+        })
+        .catch(err => {
+            res.status(500).json({message: "Error validating potluck id", error: err})
+        })
+}
+
+function validateUserParam(req, res, next) {
+    Users.getByid(req.params.id)
+        .then(([user]) => {
+            if(user) {
+                next();
+            } else {
+                res.status(404).json({message: "User not found"})
+            }
+        })
+        .catch(err => {
+            res.status(500).json({message: "Error validating user id", error: err})
+        })
 }
 
 module.exports = router;
