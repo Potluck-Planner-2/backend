@@ -57,13 +57,13 @@ describe('Test all functions of the User router', () => {
                 .send({username: "hellothere"})
                 .expect(400)
                 .then(res => {
-                    expect(res.body.message).toBe("Please include a username, first_name, last_name, and password in the body of your request.");
+                    expect(res.body.message).toBe("Please include a username, email, first_name, last_name, and password in the body of your request.");
                 })
         })
         it('will not post if username is already taken', () => {
             return request(server).post('/api/users')
                 .set({authorization: token})
-                .send({username: "victoria", first_name: "victoria", last_name: "topham", password: "Hellothere"})
+                .send({username: "victoria", email: "hi", first_name: "victoria", last_name: "topham", password: "Hellothere"})
                 .expect(400)
                 .then(res => {
                     expect(res.body.message).toBe("Username already taken.");
@@ -72,7 +72,7 @@ describe('Test all functions of the User router', () => {
         it('Will create a user with correct info', () => {
             return request(server).post('/api/users')
                 .set({authorization: token})
-                .send({username: "hank", first_name: "hank", last_name: "hill", password: "buuuh"})
+                .send({username: "hank", email: "nobutt", first_name: "hank", last_name: "hill", password: "buuuh"})
                 .expect(201)
                 .then(res => {
                     expect(res.body.message).toBe("Creation successful");
