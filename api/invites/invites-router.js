@@ -30,6 +30,17 @@ router.get('/:id', (req, res) => {
         })
 })
 
+//get invites by potluck id
+
+router.get('/potlucks/:id', (req, res) => {
+    Invites.getByPotluck(req.params.id)
+    .then(invites => {
+        res.status(200).json({invites: invites})
+    })
+    .catch(err => {
+        res.status(500).json({message: "Error retrieving invite", error: err})
+    })
+})
 // POST /invites | Create a new invite {user_id, potluck_id}
 
 router.post('/', validateBody, validateUserId, validatePotluckId, (req, res) => {
@@ -48,34 +59,7 @@ router.post('/', validateBody, validateUserId, validatePotluckId, (req, res) => 
 // PUT /invites/:id | Edit an existing invite
 
 router.put('/:id', validateId, validateUserId, validatePotluckId,(req, res) => {
-    // //if there's a userid, validate it
-    // if(req.body.user_id) {
-    //     Users.getByid(req.body.user_id)
-    //         .then(([user]) => {
-    //             if(!user){
-    //                 res.status(404).json({message: "Please use a valid user id when updating this record"})
-    //             } else {
-    //                 res.st
-    //             }
-    //         })
-    //         .catch(err => {
-    //             res.status(500).json({message: "Error validating user id of invite", error: err})
-    //         })
-    // }
-
-    //if there's a potluck id, validate it
-
-    // if(req.body.potluck_id) {
-    //     Potlucks.getById(req.body.potluck_id)
-    //         .then(([potluck]) => {
-    //             if(!potluck){
-    //                 res.status(404).json({message: "Please use a valid potluck id when updating this record"})
-    //             }
-    //         })
-    //         .catch(err => {
-    //             res.status(500).json({message: "Error validating potluck id of invite", error: err})
-    //         })
-    // }
+    
 
     Invites.update(req.params.id, req.body)
         .then(records => {

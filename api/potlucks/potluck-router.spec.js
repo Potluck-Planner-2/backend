@@ -70,7 +70,7 @@ describe('Test all functions of the Potluck router', () => {
                 .expect(200)
                 .then(res => {
                     expect(res.body.potlucks).toBeDefined();
-                    expect(res.body.potlucks[1].id).toBe(6);
+                    expect(res.body.potlucks[1].potluck_id).toBe(6);
                     expect(res.body.potlucks[1].potluck_name).toBe('Roller Coaster Protest Extravaganza');
                 })
         })

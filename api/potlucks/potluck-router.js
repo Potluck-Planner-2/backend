@@ -58,12 +58,15 @@ router.get('/mine/organizer/expanded', (req, res) => {
     
     Potlucks.getByOrganizer(req.jwt.subject)
         .then(potlucks => {
+
+            
             const expandedPotlucks = potlucks.map(potluck => {
                 return Items.getByPotluckId(potluck.id)
                     .then(items => {
                         return {...potluck, items: items};
                     })
             })
+            
             Promise.all(expandedPotlucks)
                 .then(expandedPotlucks => {
                     console.log(expandedPotlucks);
@@ -84,7 +87,7 @@ router.get('/mine/organizer/expanded', (req, res) => {
 router.get('/mine/guest', (req, res) => {
     //TODO: retrieve ALL records
 
-    let funObj = {};
+   
     Potlucks.getByGuest(req.jwt.subject)
         .then(potlucks => {
             funObj = potlucks;

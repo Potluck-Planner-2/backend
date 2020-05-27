@@ -5,7 +5,8 @@ module.exports = {
     getById,
     insert,
     update,
-    remove
+    remove,
+    getByPotluck,
 }
 
 function getAll() {
@@ -17,6 +18,12 @@ function getById(id) {
     return db.select('*')
         .from('invites')
         .where({id})
+}
+
+function getByPotluck(id) {
+    return db.select('*')
+        .from('invites')
+        .where({'potluck_id': id})
 }
 
 function insert(data) {
