@@ -38,7 +38,19 @@ router.get('/potlucks/:id', (req, res) => {
         res.status(200).json({invites: invites})
     })
     .catch(err => {
-        res.status(500).json({message: "Error retrieving invite", error: err})
+        res.status(500).json({message: "Error retrieving invites by potluck", error: err})
+    })
+})
+
+//get invites by user id
+
+router.get('/users/:id', (req, res) => {
+    Invites.getByUser(req.params.id)
+    .then(invites => {
+        res.status(200).json({invites: invites})
+    })
+    .catch(err => {
+        res.status(500).json({message: "Error retrieving invite by user id", error: err})
     })
 })
 // POST /invites | Create a new invite {user_id, potluck_id}
