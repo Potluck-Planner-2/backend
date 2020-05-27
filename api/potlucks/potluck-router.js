@@ -40,21 +40,54 @@ router.get('/:id', (req, res) => {
 
 router.get('/mine/organizer', (req, res) => {
     //TODO: retrieve ALL records
+    
     Potlucks.getByOrganizer(req.jwt.subject)
         .then(potlucks => {
-                res.status(200).json({potlucks: potlucks})
+            
+            res.status(200).json({potlucks:potlucks})
         })
         .catch(err => {
             res.status(500).json({message: "Error retreiving your potlucks", error: err})
         })
 })
 
+//GET potlucks/mine/organizer/extended | View potlucks that you've organized 
+
+router.get('/mine/organizer/expanded', (req, res) => {
+    //TODO: retrieve ALL records
+    
+    Potlucks.getByOrganizer(req.jwt.subject)
+        .then(potlucks => {
+            const expandedPotlucks = potlucks.map(potluck => {
+                return Items.getByPotluckId(potluck.id)
+                    .then(items => {
+                        return {...potluck, items: items};
+                    })
+            })
+            Promise.all(expandedPotlucks)
+                .then(expandedPotlucks => {
+                    console.log(expandedPotlucks);
+                    res.status(200).json({potlucks:expandedPotlucks})
+
+                })
+        })
+        .catch(err => {
+            res.status(500).json({message: "Error retreiving your potlucks", error: err})
+        })
+})
+
+
+
+
 //GET potlucks/mine/guest | View potluck if you've been invited as a guest 
 
 router.get('/mine/guest', (req, res) => {
     //TODO: retrieve ALL records
+
+    let funObj = {};
     Potlucks.getByGuest(req.jwt.subject)
         .then(potlucks => {
+            funObj = potlucks;
                 res.status(200).json({potlucks: potlucks})
         })
         .catch(err => {
@@ -175,5 +208,6 @@ function validatePotluckId(req, res, next) {
             res.status(500).json({message: "Error validating id", error: err})
         })
 }
+
 
 module.exports = router;
