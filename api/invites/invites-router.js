@@ -42,6 +42,18 @@ router.get('/potlucks/:id', validatePotluckParam, (req, res) => {
     })
 })
 
+//get invites by potluck id but only mine
+
+router.get('/potlucks/:id/mine', validatePotluckParam, (req, res) => {
+    Invites.getMineByPotluck(req.params.id, req.jwt.subject)
+    .then(invites => {
+        res.status(200).json({invites: invites})
+    })
+    .catch(err => {
+        res.status(500).json({message: "Error retrieving invites by potluck", error: err})
+    })
+})
+
 //get invites by user id
 
 router.get('/users/:id', validateUserParam, (req, res) => {

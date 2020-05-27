@@ -7,6 +7,7 @@ module.exports = {
     update,
     remove,
     getByPotluck,
+    getMineByPotluck,
     getByUser
 }
 
@@ -25,6 +26,12 @@ function getByPotluck(id) {
     return db.select('*')
         .from('invites')
         .where({'potluck_id': id})
+}
+
+function getMineByPotluck(potluck_id, my_id) {
+    return db.select('*')
+        .from('invites')
+        .where({'potluck_id': potluck_id, 'user_id': my_id})
 }
 
 function getByUser(id) {
