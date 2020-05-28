@@ -2,11 +2,10 @@
 const request = require('supertest');
 const db = require('../../dbConfig');
 const server = require('../server.js');
-const PotluckRouter = require('./potluck-router.js');
 const generateToken = require('../test-token');
+const Invites = require('../invites/invites-model.js');
 
 
-server.use('/api/potlucks', PotluckRouter);
 //generate login token
 const token = generateToken({id: 5, username: "victoria"})
 
@@ -18,7 +17,7 @@ describe('Test all functions of the Potluck router', () => {
 //GET
     describe('test GET /api/potlucks', () => {
         it ('returns a list of users', () => {
-            return request(server).get('/api/potlucks/')
+            return request(server).get('/api/potlucks')
                 .set({authorization: token})
                 .expect(200)
                 .then(res => {
@@ -27,6 +26,13 @@ describe('Test all functions of the Potluck router', () => {
                     expect(res.body.potlucks[0].potluck_name).toBe("Andre's Going Away Party");
                     })
         });
+        it('doesnt work without a token set', () => {
+            return request(server).get('/api/potlucks')
+                .expect(400)
+                .then(res => {
+                    expect(res.body.message).toBe("Please include your token as the authorization in your header")
+                })
+        })
     })
 
     describe('test GET /api/potlucks/:id', () => {
@@ -59,6 +65,38 @@ describe('Test all functions of the Potluck router', () => {
                     expect(res.body.potlucks[0].potluck_name).toBe('Cookoff To Cure smallpox');
                 })
         })
+        it('doesnt work with a bad token', () => {
+            return request(server).get('/api/potlucks/mine/organizer')
+                .set({authorization: "token"})
+                .expect(400)
+                .then(res => {
+                    expect(res.body.message).toBe("You have been logged out. Please log in again.");
+                })
+        })
+
+    })
+
+    describe('test GET /api/potlucks/mine/organizer/expanded', () => {
+        
+        it('returns a list of potlucks WITH items', () => {
+            return request(server).get('/api/potlucks/mine/organizer/expanded')
+                .set({authorization: token})
+                .expect(200)
+                .then(res => {
+                    expect(res.body.potlucks).toBeDefined();
+                    expect(res.body.potlucks[0].id).toBe(5);
+                    expect(res.body.potlucks[0].potluck_name).toBe('Cookoff To Cure smallpox');
+                    expect(res.body.potlucks[0].items).toBeDefined();
+
+                })
+        })
+        it('does not work without authoriztion', () => {
+            return request(server).get('/api/potlucks/mine/expanded')
+                .expect(400)
+                .then(res => {
+                    expect(res.body.message).toBe("Please include your token as the authorization in your header")
+                })
+        })
 
     })
 
@@ -72,6 +110,16 @@ describe('Test all functions of the Potluck router', () => {
                     expect(res.body.potlucks).toBeDefined();
                     expect(res.body.potlucks[1].potluck_id).toBe(6);
                     expect(res.body.potlucks[1].potluck_name).toBe('Roller Coaster Protest Extravaganza');
+                })
+        })
+        it('returns the potlucks for the logged in user', () => {
+            return request(server).get('/api/potlucks/mine/guest')
+                .set({authorization: token})
+                .then(res => {
+                    Invites.getById(res.body.potlucks[1].invite_id)
+                        .then(([invite]) => {
+                            expect(invite.user_id).toBe(5)
+                        })
                 })
         })
 

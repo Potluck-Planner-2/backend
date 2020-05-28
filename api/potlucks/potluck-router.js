@@ -69,7 +69,6 @@ router.get('/mine/organizer/expanded', (req, res) => {
             
             Promise.all(expandedPotlucks)
                 .then(expandedPotlucks => {
-                    console.log(expandedPotlucks);
                     res.status(200).json({potlucks:expandedPotlucks})
 
                 })

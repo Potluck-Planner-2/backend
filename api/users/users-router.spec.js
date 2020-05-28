@@ -3,12 +3,8 @@ const request = require('supertest');
 const jwt = require('jsonwebtoken');
 const db = require('../../dbConfig');
 const server = require('../server.js');
-const UserRouter = require('./users-router.js');
-const LoginRouter = require('../login/login-router');
 const generateToken = require('../test-token')
 
-server.use('/api/users', UserRouter);
-server.use('/api/login', LoginRouter);
 
 //generate login token
 const token = generateToken({id: 5, username: "victoria"})
@@ -23,6 +19,15 @@ describe('Test all functions of the User router', () => {
         it ('returns a list of users', () => {
             return request(server).get('/api/users/')
                 .set({authorization: token})
+                .expect(200)
+                .then(res => {
+                    expect(res.body.users).toBeDefined();
+                    expect(res.body.users[0].id).toBe(1);
+                    expect(res.body.users[0].username).toBe("nobody");
+                    })
+        });
+        it ('works without a token', () => {
+            return request(server).get('/api/users/')
                 .expect(200)
                 .then(res => {
                     expect(res.body.users).toBeDefined();

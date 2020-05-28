@@ -2,11 +2,9 @@
 const request = require('supertest');
 const db = require('../../dbConfig');
 const server = require('../server.js');
-const InvitesRouter = require('./invites-router.js');
 const generateToken = require('../test-token');
 
 
-server.use('/api/invites', InvitesRouter);
 //generate login token
 const token = generateToken({id: 5, username: "victoria"})
 
@@ -27,6 +25,10 @@ describe('Test all functions of the Invites router', () => {
                     expect(res.body.invites[0].user_id).toBe(6);
                     })
         });
+        it ('doesnt work without a token', () => {
+            return request(server).get('/api/invites')
+                .expect(400)
+        });
     })
 
     describe('test GET /api/invites/:id', () => {
@@ -45,6 +47,52 @@ describe('Test all functions of the Invites router', () => {
                     expect(res.body.invite.user_id).toBe(6);
                     })
         });
+    })
+
+    describe('test GET /api/invites/potlucks/:id', () => {
+        it('returns an array of invites', () => {
+            return request(server).get('/api/invites/potlucks/1')
+            .set({authorization: token})
+            .expect(200)
+            .then(res => {
+                expect(res.body.invites).toBeDefined();
+                expect(res.body.invites[0].id).toBe(1);
+            })
+        })
+
+        it('does not work with a bad potluck number', () => {
+            return request(server).get('/api/invites/potlucks/100')
+            .set({authorization: token})
+            .expect(404)
+
+        })
+    })
+
+    describe('test GET /api/invites/potlucks/:id/mine, the insane endpoint i was forced to make at gunpoint', () => {
+        it('returns an array of no invite if its a potluck you werent invited to', () => {
+            return request(server).get('/api/invites/potlucks/4/mine')
+            .set({authorization: token})
+            .expect(200)
+            .then(res => {
+                expect(res.body.invites).toBeDefined()
+                expect(res.body.invites[0]).toBeUndefined()
+            })
+        })
+
+        it('returns an array of a single if its a potluck you werent invited to', () => {
+            return request(server).get('/api/invites/potlucks/6/mine')
+            .set({authorization: token})
+            .expect(200)
+            .then(res => {
+                expect(res.body.invites[0].user_id).toBe(5)
+            })
+        })
+
+        it('does not work with an invalid potluck id', () => {
+            return request(server).get('/api/invites/potlucks/600/mine')
+            .set({authorization: token})
+            .expect(404)
+        })
     })
 
     describe('test POST /api/invites', () => {

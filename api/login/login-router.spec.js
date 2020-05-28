@@ -2,10 +2,8 @@
 const request = require('supertest');
 const db = require('../../dbConfig');
 const server = require('../server.js');
-const LoginRouter = require('./login-router');
 
 
-server.use('/api/login', LoginRouter);
 
 describe('Test restrictions on login', () => {
 
@@ -13,10 +11,10 @@ describe('Test restrictions on login', () => {
         await db.seed.run();
     });
     
-    it('cannot reach /api/users without being logged in', () => {
-        return request(server).get('/api/users/')
-        .expect(400);
-    })
+    // it('cannot reach /api/users without being logged in', () => {
+    //     return request(server).get('/api/users/')
+    //     .expect(400);
+    // })
     it('can log in', () => {
         return request(server).post('/api/login')
             .send({username: "victoria", password: "topham"})

@@ -27,6 +27,10 @@ describe('Test all functions of the Items router', () => {
                     expect(res.body.items[0].name).toBe('Peanut Brittle');
                     })
         });
+        it('doesnt work without a token', () => {
+            return request(server).get('/api/items')
+            .expect(400)
+        })
     })
 
     describe('test GET /api/items/:id', () => {
